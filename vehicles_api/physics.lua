@@ -18,9 +18,9 @@ function F_rr(u_rr, F_n, r)
 	return u_rr * F_n / r
 end
 
-function vector_from_length(force, angle)
+function vector_from_length(length, angle)
 	local v = vector.new(0, 0, 0)
-	v.x = force * math.sin(angle)
-	v.z = force * math.sin(90 - angle)
+	v.x = length * math.sin(angle)
+	v.z = length * math.sin(90 - angle)
 	return v
 end
