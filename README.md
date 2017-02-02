@@ -1,4 +1,4 @@
-# Minetest-mod: Vehicles
+# Minetest-mod: Vehicles (WIP)
 Vehicles is a mod(pack) for [Minetest](https://github.com/minetest/minetest)
 aiming at providing a feature-rich API for adding a variety of land vehicles
 (basically everything that has wheels and moves on the ground, excluding trains) to the game. It will focus heavily on a realistic simulation of driving physics and modularity.
@@ -17,7 +17,6 @@ aiming at providing a feature-rich API for adding a variety of land vehicles
 - Customization and tuning
 	- replaceable components (engine, clutch, gearbox, differential, tires, brakes...)
 	- tuning of components
-	- assemble your own engine and gearbox
 - Alternative drive concepts (e.g. electric vehicles)
 - Education (basic knowledge about how a car works, especially interesting for kids)
 
