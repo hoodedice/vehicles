@@ -312,42 +312,29 @@ function vehicle:on_step(dtime)
 		self:handle_accelerator_pedal(ctrl, dtime)
 		self:handle_brake_pedal(ctrl, dtime)
 		self:handle_parking_brake(ctrl)
+	end
 
-		local wheel_force = self:get_engine_torque() * (1 - self:get_clutch()) * self:get_thrust() * self:get_gearbox_translation(self:get_active_gear()) * self:get_diffrential_translation() / self:get_wheel_radius()
+	local wheel_force = self:get_engine_torque() * (1 - self:get_clutch()) *
+			self:get_thrust() * self:get_gearbox_translation(self:get_active_gear()) *
+			self:get_diffrential_translation() / self:get_wheel_radius()
 
-		self:add_force(vector_from_length(wheel_force, self.object:getyaw()))
+	self:add_force(vector_from_length(wheel_force, self.object:getyaw()))
 
-		-- Air resistance
-		-- = 0.5 Cw rho A v²
-		-- Cw = 0.78 (Mercedes W 463)
-		-- rho = 1.2 kg/m^3 (sea level)
-		-- A = projected front area of the car
-		-- v = speed
-		self:add_force(vector.multiply(self.object:getvelocity(),	-0.5 * self:get_cw() * Density.AIR * self:get_projected_front_area() * vector.length(self.object:getvelocity())))
+	-- AIR RESISTANCE
+	--	= 0.5 Cw rho A v²
+	--	Cw = 0.78 (Mercedes W 463)
+	--	rho = 1.2 kg/m^3 (sea level)
+	--	A = projected front area of the car
+	--	v = speed
+	self:add_force(vector.multiply(self.object:getvelocity(),	-0.5 * self:get_cw() * Density.AIR * self:get_projected_front_area() * vector.length(self.object:getvelocity())))
 
-		if self:get_speed() > 0 then
-			self:add_force(vector.multiply(self.object:getvelocity(), -100))
-		end
+	if self:get_speed() > 0 then
+		self:add_force(vector.multiply(self.object:getvelocity(), -100))
+	end
 
-		-- Stop when speed < 0.5
-		if self:get_speed() < Vehicles.STOP_THRESHOLD then
-			self.object:setvelocity(vector.new(0, 0, 0))
-		end
-
-		-- Calculate RPM
-		self.rpm = 60 * self:get_speed() * (1 - self:get_clutch()) / (2 * self:get_wheel_radius() * math.pi) * self:get_diffrential_translation() * self:get_gearbox_translation(self:get_active_gear())
-
-		-- Apply engine brake
-		minetest.chat_send_all(math.pow(self.rpm, 0.95 * self:get_active_gear()))
-		-- Todo richtung?
-		self:add_force(vector_from_length(math.pow(self.rpm, 0.90 * self:get_active_gear()), -self.object:getyaw()))
-
-		-- Clutch when rpm < 850
-		if self.rpm < 850 and not ctrl.up then
-			self.clutch_pedal = 1
-		else
-			self.clutch_pedal = 0
-		end
+	-- Stop when speed < 0.5
+	if self:get_speed() < Vehicles.STOP_THRESHOLD then
+		self.object:setvelocity(vector.new(0, 0, 0))
 	end
 
 	if Vehicles.DEBUG and self:has_driver() then
