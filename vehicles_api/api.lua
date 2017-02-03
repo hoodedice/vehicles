@@ -326,7 +326,10 @@ function vehicle:on_step(dtime)
 	--	rho = 1.2 kg/m^3 (sea level)
 	--	A = projected front area of the car
 	--	v = speed
-	self:add_force(vector.multiply(self.object:getvelocity(),	-0.5 * self:get_cw() * Density.AIR * self:get_projected_front_area() * vector.length(self.object:getvelocity())))
+	self:add_force(vector.multiply(self.object:getvelocity(),
+			-0.5 * self:get_cw() * Density.AIR * self:get_projected_front_area() *
+			vector.length(self.object:getvelocity())
+	))
 
 	if self:get_speed() > 0 then
 		self:add_force(vector.multiply(self.object:getvelocity(), -100))
