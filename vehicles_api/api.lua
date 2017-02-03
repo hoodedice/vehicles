@@ -337,6 +337,9 @@ function vehicle:on_step(dtime)
 		self:add_force(vector.multiply(self.object:getvelocity(), -500))
 	end
 
+	-- ENGINE RESISTANCE
+	-- TODO Implement
+
 	-- Stop when speed < 0.5
 	if self:get_speed() < Vehicles.STOP_THRESHOLD then
 		self.object:setvelocity(vector.new(0, 0, 0))
