@@ -331,8 +331,10 @@ function vehicle:on_step(dtime)
 			vector.length(self.object:getvelocity())
 	))
 
+	-- ROLLING RESISTANCE
+	--	TODO: Calculate a proper value
 	if self:get_speed() > 0 then
-		self:add_force(vector.multiply(self.object:getvelocity(), -100))
+		self:add_force(vector.multiply(self.object:getvelocity(), -500))
 	end
 
 	-- Stop when speed < 0.5
@@ -340,8 +342,9 @@ function vehicle:on_step(dtime)
 		self.object:setvelocity(vector.new(0, 0, 0))
 	end
 
+	-- Debug mode only
 	if Vehicles.DEBUG and self:has_driver() then
-		self:debug_refresh(self.hud.debug.speed, "Speed", vector.length(self.object:getvelocity()))
+		self:debug_refresh(self.hud.debug.speed, "Speed", round(vector.length(self.object:getvelocity()) * 3.6, 1) .. "km/h")
 		self:debug_refresh(self.hud.debug.accelerator_pedal, "Accelerator Pedal", self.accelerator_pedal)
 		self:debug_refresh(self.hud.debug.brake_pedal, "Brake Pedal", self.brake_pedal)
 		self:debug_refresh(self.hud.debug.parking_brake, "Parking Brake", self.parking_brake)
@@ -350,6 +353,7 @@ function vehicle:on_step(dtime)
 		self:debug_refresh(self.hud.debug.rpm, "RPM", self.rpm)
 	end
 
+	-- Apply attached forces and prepare for next frame
 	self:apply_acceleration()
 	self:clear_force()
 end
