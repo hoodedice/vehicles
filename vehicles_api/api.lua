@@ -332,9 +332,10 @@ function vehicle:on_step(dtime)
 	))
 
 	-- ROLLING RESISTANCE
-	--	TODO: Calculate a proper value
+	-- not yet physically correct
+	-- F_rr =
 	if self:get_speed() > 0 then
-		self:add_force(vector.multiply(self.object:getvelocity(), -500))
+		self:add_force(vector.multiply(self.object:getvelocity(), F_rr(0.05, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius())))
 	end
 
 	-- ENGINE RESISTANCE
