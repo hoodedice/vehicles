@@ -1,7 +1,7 @@
 # Minetest-mod: Vehicles (WIP)
 **Code License:** GPLv3
 
-**Media License:** CC-BY-NC-SA 3.0
+**vehicles_demo/models/*:** CC-BY-NC-SA 3.0
 
 Vehicles is a mod(pack) for [Minetest](https://github.com/minetest/minetest)
 aiming at providing a feature-rich API for adding a variety of land vehicles
