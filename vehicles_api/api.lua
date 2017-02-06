@@ -336,6 +336,11 @@ function vehicle:on_step(dtime)
 		self.object:setvelocity(vector.new(0, 0, 0))
 	end
 
+	-- Calculate RPM
+	self.rpm = ((60 * self:get_speed()) / (self:get_wheel_radius() * 2 * math.pi)) *
+			self:get_diffrential_translation() *
+			self:get_gearbox_translation(self:get_active_gear())
+
 	-- Debug mode only
 	if Vehicles.DEBUG and self:has_driver() then
 		self:debug_refresh(self.hud.debug.speed, "Speed", round(vector.length(self.object:getvelocity()) * 3.6, 1) .. "km/h")
