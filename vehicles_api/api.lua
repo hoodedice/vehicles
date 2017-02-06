@@ -276,21 +276,11 @@ function vehicle:handle_brake_pedal(ctrl, dtime)
 	end
 end
 
-function vehicle:handle_clutch_pedal(ctrl, dtime)
+function vehicle:handle_reverse_gear(ctrl)
 	if ctrl.sneak then
-		if self.clutch_pedal < 1.0 then
-			self.clutch_pedal = self.clutch_pedal + 4 * dtime
-		end
-		if self.clutch_pedal > 1.0 then
-			self.clutch_pedal = 1.0
-		end
+		self.gear = -1
 	else
-		if self.clutch_pedal > 0.0 then
-			self.clutch_pedal = self.clutch_pedal - 2 * dtime
-		end
-		if self.clutch_pedal < 0.0 then
-			self.clutch_pedal = 0.0
-		end
+		self.gear = 1
 	end
 end
 
@@ -308,7 +298,7 @@ function vehicle:on_step(dtime)
 	if self:has_driver() then
 		local ctrl = self:get_driver():get_player_control()
 
-		-- self:handle_clutch_pedal(ctrl, dtime)
+		self:handle_reverse_gear(ctrl)
 		self:handle_accelerator_pedal(ctrl, dtime)
 		self:handle_brake_pedal(ctrl, dtime)
 		self:handle_parking_brake(ctrl)
@@ -335,7 +325,7 @@ function vehicle:on_step(dtime)
 	-- not yet physically correct
 	if self:get_speed() > 0 then
 		self:add_force(vector.multiply(self.object:getvelocity(),
-				F_rr(0.05, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius())))
+				F_rr(0.03, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius())))
 	end
 
 	-- ENGINE RESISTANCE
