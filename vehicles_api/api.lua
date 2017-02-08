@@ -277,7 +277,7 @@ function vehicle:handle_brake_pedal(ctrl, dtime)
 end
 
 function vehicle:handle_reverse_gear(ctrl)
-	if ctrl.sneak and self:get_speed() == 0 then
+	if ctrl.sneak and self:get_clutch() == 1 then
 		self.gear = -1
 	end
 end
