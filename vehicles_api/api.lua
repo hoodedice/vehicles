@@ -224,7 +224,7 @@ function vehicle:get_diffrential_translation()
 end
 
 function vehicle:get_wheel_radius()
-	return 0.3
+	return 0.25
 end
 
 function vehicle:get_projected_front_area()
