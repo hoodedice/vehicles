@@ -277,10 +277,8 @@ function vehicle:handle_brake_pedal(ctrl, dtime)
 end
 
 function vehicle:handle_reverse_gear(ctrl)
-	if ctrl.sneak then
+	if ctrl.sneak and self:get_speed() == 0 then
 		self.gear = -1
-	else
-		self.gear = 1
 	end
 end
 
@@ -292,6 +290,22 @@ function vehicle:handle_parking_brake(ctrl)
 	end
 end
 
+function vehicle:handle_clutch_pedal(ctrl)
+	if not ctrl.up and self.rpm <= 800 then
+		self.clutch_pedal = 1
+	elseif ctrl.up then
+		self.clutch_pedal = 0
+	end
+end
+
+function vehicle:update_rpm()
+	self.rpm = math.floor(((60 * self:get_speed()) /
+			(self:get_wheel_radius() * 2 * math.pi)) *
+			self:get_diffrential_translation() *
+			self:get_gearbox_translation(self:get_active_gear()) +
+			800 * (1 - self:get_clutch()))
+end
+
 function vehicle:on_step(dtime)
 	self:add_gravity()
 
@@ -301,6 +315,7 @@ function vehicle:on_step(dtime)
 		self:handle_reverse_gear(ctrl)
 		self:handle_accelerator_pedal(ctrl, dtime)
 		self:handle_brake_pedal(ctrl, dtime)
+		self:handle_clutch_pedal(ctrl)
 		self:handle_parking_brake(ctrl)
 	end
 
@@ -337,9 +352,7 @@ function vehicle:on_step(dtime)
 	end
 
 	-- Calculate RPM
-	self.rpm = ((60 * self:get_speed()) / (self:get_wheel_radius() * 2 * math.pi)) *
-			self:get_diffrential_translation() *
-			self:get_gearbox_translation(self:get_active_gear())
+	self:update_rpm()
 
 	-- Debug mode only
 	if Vehicles.DEBUG and self:has_driver() then
