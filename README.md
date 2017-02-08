@@ -7,6 +7,8 @@ Vehicles is a mod(pack) for [Minetest](https://github.com/minetest/minetest)
 aiming at providing a feature-rich API for adding a variety of land vehicles
 (basically everything that has wheels and moves on the ground, excluding trains) to the game. It will focus heavily on a realistic simulation of driving physics and modularity.
 
+![Screenshot](https://webd97.de/wp-content/uploads/2016/12/mt_mod_vehicles.png)
+
 ## Main features (planned)
 - Accurate driving physics (no Arcade-style)
 	- Torque-based engine simulation
