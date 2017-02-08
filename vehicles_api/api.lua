@@ -302,7 +302,7 @@ function vehicle:update_rpm()
 	self.rpm = math.floor(((60 * self:get_speed()) /
 			(self:get_wheel_radius() * 2 * math.pi)) *
 			self:get_diffrential_translation() *
-			self:get_gearbox_translation(self:get_active_gear()) +
+			math.abs(self:get_gearbox_translation(self:get_active_gear())) +
 			800 * (1 - self:get_clutch()))
 end
 
