@@ -313,6 +313,10 @@ function vehicle:update_rpm()
 	end
 end
 
+function vehicle:get_drive_direction_vector()
+	return vector.normalize(self.object:getvelocity())
+end
+
 function vehicle:on_step(dtime)
 	self:add_gravity()
 
@@ -344,14 +348,13 @@ function vehicle:on_step(dtime)
 	))
 
 	-- ROLLING RESISTANCE
-	-- not yet physically correct
-	if self:get_speed() > 0 then
-		self:add_force(vector.multiply(self.object:getvelocity(),
-				F_rr(0.03, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius())))
-	end
+	-- = u_rr * F_n / r
+	minetest.chat_send_all(minetest.serialize(self:get_drive_direction_vector()))
+	self:add_force(vector.multiply(self:get_drive_direction_vector(),
+			F_rr(0.05, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius())))
 
 	-- ENGINE RESISTANCE
-	-- TODO Implement
+	-- 100 * rpm / gear
 
 	-- Stop when speed < 0.5
 	if self:get_speed() < Vehicles.STOP_THRESHOLD then
