@@ -309,7 +309,7 @@ function vehicle:update_rpm()
 			(self:get_wheel_radius() * 2 * math.pi)) *
 			self:get_diffrential_translation() *
 			math.abs(self:get_gearbox_translation(self:get_active_gear())) +
-			800 * self:get_clutch())
+			900 * (1 - self:get_clutch()))
 end
 
 function vehicle:on_step(dtime)
