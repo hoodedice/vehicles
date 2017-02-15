@@ -293,8 +293,14 @@ end
 function vehicle:handle_clutch_pedal(ctrl)
 	if not ctrl.up and self.rpm <= 800 then
 		self.clutch_pedal = 1
-	elseif ctrl.up then
+		self.gear = 0
+	elseif ctrl.up and self:get_speed() == 0 then
 		self.clutch_pedal = 0
+		if ctrl.sneak then
+			self.gear = -1
+		else
+			self.gear = 1
+		end
 	end
 end
 
