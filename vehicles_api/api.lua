@@ -194,7 +194,7 @@ function vehicle:get_brake()
 end
 
 function vehicle:get_clutch()
-	return self.clutch_pedal
+	return 1 - self.clutch_pedal
 end
 
 function vehicle:get_active_gear()
@@ -277,7 +277,7 @@ function vehicle:handle_brake_pedal(ctrl, dtime)
 end
 
 function vehicle:handle_reverse_gear(ctrl)
-	if ctrl.sneak and self:get_clutch() == 1 then
+	if ctrl.sneak and self:get_clutch() == 0 then
 		self.gear = -1
 	end
 end
@@ -303,7 +303,7 @@ function vehicle:update_rpm()
 			(self:get_wheel_radius() * 2 * math.pi)) *
 			self:get_diffrential_translation() *
 			math.abs(self:get_gearbox_translation(self:get_active_gear())) +
-			800 * (1 - self:get_clutch()))
+			800 * self:get_clutch())
 end
 
 function vehicle:on_step(dtime)
@@ -319,7 +319,7 @@ function vehicle:on_step(dtime)
 		self:handle_parking_brake(ctrl)
 	end
 
-	local wheel_force = self:get_engine_torque() * (1 - self:get_clutch()) *
+	local wheel_force = self:get_engine_torque() * self:get_clutch() *
 			self:get_thrust() * self:get_gearbox_translation(self:get_active_gear()) *
 			self:get_diffrential_translation() / self:get_wheel_radius()
 
