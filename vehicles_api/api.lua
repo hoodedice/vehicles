@@ -193,6 +193,10 @@ function vehicle:get_brake()
 	return self.brake_pedal
 end
 
+--[[
+	Returns the factor of clutch engagement
+	@return 0..1, where 1 means completely engaged
+]]
 function vehicle:get_clutch()
 	return 1 - self.clutch_pedal
 end
@@ -291,25 +295,22 @@ function vehicle:handle_parking_brake(ctrl)
 end
 
 function vehicle:handle_clutch_pedal(ctrl)
-	if not ctrl.up and self.rpm <= 800 then
+	if self.rpm <= 900 and false then
 		self.clutch_pedal = 1
-		self.gear = 0
-	elseif ctrl.up and self:get_speed() == 0 then
+	else
 		self.clutch_pedal = 0
-		if ctrl.sneak then
-			self.gear = -1
-		else
-			self.gear = 1
-		end
 	end
 end
 
 function vehicle:update_rpm()
-	self.rpm = math.floor(((60 * self:get_speed()) /
-			(self:get_wheel_radius() * 2 * math.pi)) *
-			self:get_diffrential_translation() *
-			math.abs(self:get_gearbox_translation(self:get_active_gear())) +
-			900 * (1 - self:get_clutch()))
+	if self:get_clutch() == 1 then
+		self.rpm = math.floor(((60 * self:get_speed()) /
+				(self:get_wheel_radius() * 2 * math.pi)) *
+				self:get_diffrential_translation() *
+				math.abs(self:get_gearbox_translation(self:get_active_gear())))
+	else
+		self.rpm = 900
+	end
 end
 
 function vehicle:on_step(dtime)
