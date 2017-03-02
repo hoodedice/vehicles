@@ -37,6 +37,7 @@ local vehicle = {
 			rpm = nil,
 			frr = nil,
 			fad = nil,
+			feng = nil
 		}
 	}
 }
@@ -180,6 +181,15 @@ function vehicle:debug_init(driver)
 			hud_elem_type = "text",
 			position = {x = 0.05, y = 0.64},
 			name = "fad",
+			scale = {x = 0.2,y = 1},
+			text = "foo",
+			number = 0xFFFFFF,
+			alignment = {x = 1, y = 0}
+		})
+		self.hud.debug.feng = driver:hud_add({
+			hud_elem_type = "text",
+			position = {x = 0.05, y = 0.62},
+			name = "feng",
 			scale = {x = 0.2,y = 1},
 			text = "foo",
 			number = 0xFFFFFF,
@@ -372,11 +382,14 @@ function vehicle:on_step(dtime)
 	-- ROLLING RESISTANCE
 	-- = u_rr * F_n / r
 	-- This force is problematic because the forumla assumes a constant v
-	-- local rr = F_rr(0.015, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius());
+	local rr = F_rr(0.015, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius());
 	-- self:add_force(vector.multiply(self:get_drive_direction_vector(), rr))
 
 	-- ENGINE RESISTANCE
-	-- 100 * rpm / gear
+	-- this is not physically correct
+	-- = sqrt(200 * rpm)
+	local f_eng = - math.sqrt(500 * self.rpm) / self:get_active_gear()
+	self:add_force(vector.multiply(self:get_drive_direction_vector(), f_eng))
 
 	-- Stop when speed < 0.5
 	if self:get_speed() < Vehicles.STOP_THRESHOLD then
@@ -398,6 +411,7 @@ function vehicle:on_step(dtime)
 
 		self:debug_refresh(self.hud.debug.fad, "F_air", round(f_air, 2))
 		self:debug_refresh(self.hud.debug.frr, "F_rr", round(rr * vector.length(self:get_drive_direction_vector()), 2))
+		self:debug_refresh(self.hud.debug.feng, "F_eng", round(f_eng, 2))
 	end
 
 	-- Apply attached forces and prepare for next frame
