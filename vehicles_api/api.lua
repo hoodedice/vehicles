@@ -349,9 +349,8 @@ function vehicle:on_step(dtime)
 
 	-- ROLLING RESISTANCE
 	-- = u_rr * F_n / r
-	minetest.chat_send_all(minetest.serialize(self:get_drive_direction_vector()))
-	self:add_force(vector.multiply(self:get_drive_direction_vector(),
-			F_rr(0.05, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius())))
+	local rr = F_rr(0.015, F_n(0, F_g(self:get_weigth())), self:get_wheel_radius());
+	self:add_force(vector.multiply(self:get_drive_direction_vector(), rr))
 
 	-- ENGINE RESISTANCE
 	-- 100 * rpm / gear
