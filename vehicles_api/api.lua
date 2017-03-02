@@ -34,7 +34,9 @@ local vehicle = {
 			parking_brake = nil,
 			clutch_pedal = nil,
 			gear = nil,
-			rpm = nil
+			rpm = nil,
+			frr = nil,
+			fad = nil,
 		}
 	}
 }
@@ -160,6 +162,24 @@ function vehicle:debug_init(driver)
 			hud_elem_type = "text",
 			position = {x = 0.05, y = 0.68},
 			name = "RPM",
+			scale = {x = 0.2,y = 1},
+			text = "foo",
+			number = 0xFFFFFF,
+			alignment = {x = 1, y = 0}
+		})
+		self.hud.debug.frr = driver:hud_add({
+			hud_elem_type = "text",
+			position = {x = 0.05, y = 0.66},
+			name = "frr",
+			scale = {x = 0.2,y = 1},
+			text = "foo",
+			number = 0xFFFFFF,
+			alignment = {x = 1, y = 0}
+		})
+		self.hud.debug.fad = driver:hud_add({
+			hud_elem_type = "text",
+			position = {x = 0.05, y = 0.64},
+			name = "fad",
 			scale = {x = 0.2,y = 1},
 			text = "foo",
 			number = 0xFFFFFF,
@@ -342,10 +362,12 @@ function vehicle:on_step(dtime)
 	--	rho = 1.2 kg/m^3 (sea level)
 	--	A = projected front area of the car
 	--	v = speed
-	self:add_force(vector.multiply(self.object:getvelocity(),
-			-0.5 * self:get_cw() * Density.AIR * self:get_projected_front_area() *
+	local f_air = -0.5 * self:get_cw() * Density.AIR *
+			self:get_projected_front_area() *
+			vector.length(self.object:getvelocity()) *
 			vector.length(self.object:getvelocity())
-	))
+
+	self:add_force(vector.multiply(self:get_drive_direction_vector(), f_air))
 
 	-- ROLLING RESISTANCE
 	-- = u_rr * F_n / r
@@ -372,6 +394,9 @@ function vehicle:on_step(dtime)
 		self:debug_refresh(self.hud.debug.clutch_pedal, "Clutch Pedal", self.clutch_pedal)
 		self:debug_refresh(self.hud.debug.gear, "Gear", self.gear)
 		self:debug_refresh(self.hud.debug.rpm, "RPM", self.rpm)
+
+		self:debug_refresh(self.hud.debug.fad, "F_air", round(f_air, 2))
+		self:debug_refresh(self.hud.debug.frr, "F_rr", round(rr * vector.length(self:get_drive_direction_vector()), 2))
 	end
 
 	-- Apply attached forces and prepare for next frame
